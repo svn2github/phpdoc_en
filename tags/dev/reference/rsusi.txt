@@ -1,0 +1,131 @@
+This is the Reference Structure Update Status Information file. Sings:
+
+ ~ means that the content is very limited, or the update was
+   not really effective
+   
+ ++ means there are other heading as the usual ones, so this
+    may bring to our attention, that new standard heading may
+    be needed 
+    
+ !no means that the new structure is not applied
+ 
+For other extensions, the new structure is applied. Please also reflect your
+changes here, if you mofify any reference.xml and the modification affects this
+table. One may also add more columns for ini and configure stuff reorganization...
+
+Extension   New Ref Struct   Remarks
+--------------------------------------------------------------------------------
+apache         ~
+array          
+aspell         
+bc             
+bzip2          
+calendar       
+ccvs           
+classobj       
+com            
+cpdf           
+crack          
+ctype          
+curl           
+cybercash      ~
+cybermut       
+cyrus          ~
+datetime       
+dba            
+dbase          
+dbm            
+dbplus         
+dbx            
+dio            
+dir            
+domxml         ++
+dotnet         ~
+errorfunc      
+exec           
+fbsql          
+fdf            
+filepro        ~
+filesystem     
+fribidi        ~
+ftp            
+funchand       
+gettext        
+gmp            
+http           
+hw             ++
+hwapi          ++
+ibase          
+icap           
+iconv          
+ifx            
+iisfunc        
+image          
+imap           
+info           
+ingres-ii
+ircg           
+java           ++
+ldap           ++
+mail           
+mailparse      ~
+math           
+mbstring       ++
+mcal
+mcrypt         ++
+mcve           ~
+mhash          
+mime_magic     
+ming           ++
+misc           ~             constants??
+mnogosearch    
+msession       ~
+msql           ~
+mssql          
+muscat         ~
+mysql          
+ncurses        
+network        ~
+nis            
+notes          ~
+objaggregation 
+oci8           
+openssl        ++
+oracle         ~
+outcontrol     
+overload       
+ovrimos        
+pcntl          
+pcre           
+pdf            !no
+pfpro          !no
+pgsql          !no
+posix          !no
+printer        !no
+pspell         
+qtdom          !no
+readline       
+recode         !no
+regex          !no
+sem            !no
+sesam          !no
+session        ++
+shmop          !no
+snmp           !no
+sockets        ++
+strings        
+swf
+sybase         !no
+tokenizer      ~
+uodbc
+url            ~
+var            ~
+vpopmail       ~
+w32api
+wddx
+xml
+xmlrpc
+xslt
+yaz
+zip
+zlib
