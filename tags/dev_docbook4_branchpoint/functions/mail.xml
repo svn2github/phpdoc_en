@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- $Revision: 1.32 $ -->
+ <reference id="ref.mail">
+  <title>Mail functions</title>
+  <titleabbrev>Mail</titleabbrev>
+  <partintro>
+   <simpara>
+    The <function>mail</function> function allows you to send mail
+   </simpara>
+
+   <variablelist>
+    <title>Mail Configuration Directives</title>
+
+    <varlistentry id="ini.smtp">
+     <term>
+      <parameter>SMTP</parameter>
+      <type>string</type>
+     </term>
+     <listitem>
+      <para>
+       DNS name or IP address of the SMTP server PHP under Windows
+       should use for mail sent with the <function>mail</function>
+       function.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="ini.sendmail-from">
+     <term>
+      <parameter>sendmail_from</parameter>
+      <type>string</type>
+     </term>
+     <listitem>
+      <para>
+       Which "From:" mail address should be used in mail sent from
+       PHP under Windows.</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="ini.sendmail-path">
+     <term>
+      <parameter>sendmail_path</parameter>
+      <type>string</type>
+     </term>
+     <listitem>
+      <para>
+       Where the <command>sendmail</command> program can be found,
+       usually <filename>/usr/sbin/sendmail</filename> or
+       <filename>/usr/lib/sendmail</filename>
+       <command>configure</command> does an honest attempt of
+       locating this one for you and set a default, but if it fails,
+       you can set it here.</para>
+      <para>
+       Systems not using sendmail should set this directive to the
+       sendmail wrapper/replacement their mail system offers, if any.
+       For example, <ulink url="&url.qmail;">Qmail</ulink>
+       users can normally set it to
+       <filename>/var/qmail/bin/sendmail</filename>.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </partintro>
+
+  <refentry id="function.mail">
+   <refnamediv>
+    <refname>mail</refname>
+    <refpurpose>send mail</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Description</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>bool <function>mail</function></funcdef>
+      <paramdef>string <parameter>to</parameter></paramdef>
+      <paramdef>string <parameter>subject</parameter></paramdef>
+      <paramdef>string <parameter>message</parameter></paramdef>
+      <paramdef>string
+       <parameter><optional>additional_headers</optional></parameter>
+      </paramdef>
+      <paramdef>string
+       <parameter><optional>additional_parameters</optional>
+       </parameter>
+      </paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <simpara>
+     <function>mail</function> automatically mails the message
+     specified in <parameter>message</parameter> to the receiver
+     specified in <parameter>to</parameter>. Multiple recipients can
+     be specified by putting a comma between each address in
+     <parameter>to</parameter>.  Email with attachments and special
+     types of content can be sent using this function. This is
+     accomplished via MIME-encoding - for more information, see
+     <ulink url="http://www.zend.com/zend/spotlight/sendmimeemailpart1.php"
+     >http://www.zend.com/zend/spotlight/sendmimeemailpart1.php</ulink> or
+     <ulink url="&url.rfc1896;">RFC 1896</ulink>).
+    </simpara>
+    <para>
+     <function>mail</function> returns &true; if the mail
+     is successfully sent, &false; otherwise.
+    </para>
+    <para>
+     <example>
+      <title>Sending mail.</title>
+      <programlisting>
+mail("joecool@example.com", "My Subject", "Line 1\nLine 2\nLine 3");
+      </programlisting>
+     </example></para>
+    <simpara>
+     If a fourth string argument is passed, this string is inserted at
+     the end of the header.  This is typically used to add extra
+     headers. Multiple extra headers are separated with a carriage return
+     and newline.
+    </simpara>
+    <note>
+     <para>
+     You must use <literal>\r\n</literal> to seperate headers, although
+     some Unix mail transfer agents may work with just a single newline
+     (<literal>\n</literal>). The Cc: header is case sensitive and must
+     be written as <literal>Cc:</literal> on Win32 systems. The Bcc:
+     header is also not supported on Win32 systems.
+     </para>
+    </note>
+    <para>
+     <example>
+      <title>Sending mail with extra headers.</title>
+      <programlisting>
+mail("nobody@example.com", "the subject", $message,
+     "From: webmaster@$SERVER_NAME\r\n"
+    ."Reply-To: webmaster@$SERVER_NAME\r\n"
+    ."X-Mailer: PHP/" . phpversion());
+      </programlisting>
+     </example>
+    </para>
+    <para>
+     The <parameter>additional_parameters</parameter> parameter
+     can be used to pass additional parameters to the program configured
+     to use when sending mail using the <literal>sendmail_path</literal>
+     configuration setting. For example, this can be used to set the
+     envelope sender address when using sendmail. You may need to add
+     the user that your web server runs as to your sendmail configuration
+     to prevent a 'X-Warning' header from being added to the message when
+     you set the envelope sender using this method.
+     <example>
+      <title>Sending mail with extra headers and setting an additional command line parameter.</title>
+      <programlisting>
+mail("nobody@example.com", "the subject", $message,
+     "From: webmaster@$SERVER_NAME", "-fwebmaster@$SERVER_NAME");
+      </programlisting>
+     </example>
+    </para>
+    <note>
+     <para>
+      This fifth parameter was added in PHP 4.0.5.
+     </para>
+    </note>
+    <para>
+     You can also use simple string building techniques to build complex
+     email messages.
+     <example>
+      <title>Sending complex email.</title>
+      <programlisting>
+/* recipients */
+$to  = "Mary &lt;mary@example.com&gt;" . ", " ; //note the comma
+$to .= "Kelly &lt;kelly@example.com&gt;";
+
+/* subject */
+$subject = "Birthday Reminders for August";
+
+/* message */
+$message = '
+&lt;html&gt;
+&lt;head&gt;
+ &lt;title&gt;Birthday Reminders for August&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Here are the birthdays upcoming in August!&lt;/p&gt;
+&lt;table&gt;
+ &lt;tr&gt;
+  &lt;th&gt;Person&lt;/th&gt;&lt;th&gt;Day&lt;/th&gt;&lt;th&gt;Month&lt;/th&gt;&lt;th&gt;Year&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+  &lt;td&gt;Joe&lt;/td&gt;&lt;td&gt;3rd&lt;/td&gt;&lt;td&gt;August&lt;/td&gt;&lt;td&gt;1970&lt;/td&gt;
+  &lt;td&gt;Sally&lt;/td&gt;&lt;td&gt;17th&lt;/td&gt;&lt;td&gt;August&lt;/td&gt;&lt;td&gt;1973&lt;/td&gt;
+ &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+';
+
+/* To send HTML mail, you can set the Content-type header. */
+$headers  = "MIME-Version: 1.0\r\n";
+$headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
+
+/* additional headers */
+$headers .= "From: Birthday Reminder &lt;birthday@example.com&gt;\r\n";
+
+$headers .= "Cc: birthdayarchive@example.com\r\n";
+$headers .= "Bcc: birthdaycheck@example.com\r\n";
+
+/* and now mail it */
+mail($to, $subject, $message, $headers);
+      </programlisting>
+     </example>
+    </para>
+    <note>
+     <para>
+       Make sure you do not have any newline characters in the
+       <parameter>to</parameter> or <parameter>subject</parameter>,
+       or the mail may not be sent properly.
+     </para>
+    </note>
+   </refsect1>
+  </refentry>
+
+  <refentry id="function.ezmlm-hash">
+   <refnamediv>
+    <refname>ezmlm_hash</refname>
+    <refpurpose>Calculate the hash value needed by EZMLM</refpurpose>
+   </refnamediv>
+   <refsect1>
+    <title>Description</title>
+    <funcsynopsis>
+     <funcprototype>
+      <funcdef>int <function>ezmlm_hash</function></funcdef>
+      <paramdef>string <parameter>addr</parameter></paramdef>
+     </funcprototype>
+    </funcsynopsis>
+    <simpara>
+     <function>ezmlm_hash</function> calculates the hash value needed
+     when keeping EZMLM mailing lists in a MySQL database.
+    </simpara>
+    <para>
+     <example>
+      <title>Calculating the hash and subscribing a user</title>
+      <programlisting>
+$user = "joecool@example.com";
+$hash = ezmlm_hash ($user);
+$query = sprintf ("INSERT INTO sample VALUES (%s, '%s')", $hash, $user);
+$db->query($query); // using PHPLIB db interface
+      </programlisting>
+     </example>
+    </para>
+   </refsect1>
+  </refentry>
+
+ </reference>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
