@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- $Revision$ -->
+<phpdoc:classref xml:id="class.mongocursor" xmlns:phpdoc="http://php.net/ns/phpdoc" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+ <title>The MongoCursor class</title>
+ <titleabbrev>MongoCursor</titleabbrev>
+
+ <partintro>
+
+  <!-- {{{ Mongocursor intro -->
+  <section xml:id="mongocursor.intro">
+   &reftitle.intro;
+   <para>
+    Result object for database query.
+   </para>
+   <para>
+    A <classname>MongoCursor</classname> has two "life stages": pre- and post-
+    query.  A cursor can be created manually by calling the constructor, but it
+    is most often created by calling <function>MongoCollection::find</function>.
+    When a cursor is created, it has not yet contacted the database, so it is in
+    its pre-query state.  In this state, the client can further specify what
+    they want the query to do, including adding limits, skips, sorts, and more
+    advanced options.
+   </para>
+   <para>
+    When the client attempts to get a result (by calling 
+    <function>MongoCursor::next</function>, directly or indirectly), the cursor
+    moves into the post-query stage.  At this point, the query has been executed
+    by the database and cannot be modified anymore.
+   </para>
+   <para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$cursor = $collection->find()->limit(10);
+
+// database has not yet been queried, so more search options can be added
+$cursor = $cursor->sort(array("a" => 1));
+
+var_dump($cursor->getNext());
+// now database has been queried and more options cannot be added
+
+// so this will throw an exception:
+$cursor->skip(4);
+?>
+]]>
+    </programlisting>
+   </para>
+  </section>
+  <!-- }}} -->
+
+  <section xml:id="mongocursor.synopsis">
+   &reftitle.classsynopsis;
+
+   <!-- {{{ Synopsis -->
+   <classsynopsis>
+    <ooclass><classname>MongoCursor</classname></ooclass>
+
+    <!-- {{{ Class synopsis -->
+    <classsynopsisinfo>
+     <ooclass>
+      <modifier>implements</modifier>
+      <classname>Iterator</classname>
+     </ooclass>
+    </classsynopsisinfo>
+    <!-- }}} -->
+    
+    <classsynopsisinfo role="comment">Static Fields</classsynopsisinfo>
+    <fieldsynopsis>
+     <modifier>static</modifier>
+     <type>boolean</type>
+     <varname>slaveOkay</varname>
+     <initializer>&false;</initializer>
+    </fieldsynopsis>
+    <fieldsynopsis>
+     <modifier>static</modifier>
+     <type>integer</type>
+     <varname>timeout</varname>
+     <initializer>20000</initializer>
+    </fieldsynopsis>
+
+    <classsynopsisinfo role="comment">&Methods;</classsynopsisinfo>
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.mongocursor')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[1])" />
+   </classsynopsis>
+   <!-- }}} -->
+
+  </section>
+
+  <section>
+   <title>Static Variables</title>
+
+   <variablelist>
+    <varlistentry>
+     <term><property>MongoCursor::slaveOkay</property></term>
+     <listitem>
+      <para>
+       If the query should have the "slaveOkay" flag set, which allows reads on
+       the slave (slaves are, by default, just for backup and unreadable).  Can 
+       be overridden with <function>MongoCursor::slaveOkay</function>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><property>MongoCursor::timeout</property></term>
+     <listitem>
+      <para>
+       Set timeout in milliseconds for all database responses.  To wait forever,
+       use -1. Can be overridden with <function>MongoCursor::timeout</function>.
+       This does not cause the MongoDB server to cancel the operation, it just
+       causes the driver to stop waiting for a response and throw a
+       MongoCursorTimeoutException.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </section>
+
+  <section>
+   &reftitle.seealso;
+   <para>
+    MongoDB core docs on <link xlink:href="&url.mongodb.dochub.cursors;">cursors</link>.
+   </para>
+  </section>
+
+ </partintro>
+
+ &reference.mongo.entities.mongocursor;
+
+</phpdoc:classref>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
