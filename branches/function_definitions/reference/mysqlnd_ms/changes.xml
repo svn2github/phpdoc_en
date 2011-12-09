@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+
+<chapter xml:id="mysqlnd-ms.changes" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title xmlns="http://docbook.org/ns/docbook">Change History</title>
+ <para>
+  This change history is a high level summary of selected changes
+  that may impact applications and/or break backwards compatibility.
+ </para>
+ <para>
+  See also the <filename>CHANGES</filename> file in the source distribution
+  for a complete list of changes.
+ </para>
+
+ <section xml:id="mysqlnd-ms.changes_one_one">
+  <title xmlns="http://docbook.org/ns/docbook">PECL/mysqlnd_ms 1.1 series</title>
+  <para>
+   1.1.0-beta
+   <itemizedlist>
+    <listitem>
+     <simpara>
+      Release date: no released yet, planned for Q4 2011
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Motto/theme: Cover replication basics with production quality
+     </simpara>
+    </listitem>
+   </itemizedlist>
+  </para>
+  <para>
+   The 1.1 and 1.0 series expose a similar feature set. Internally,
+   the 1.1 series has been refactored to plan for future feature
+   additions. A new configuration file format has been introduced,
+   and limitations have been lifted. And the code quality and quality
+   assurance has been improved.
+  </para>
+  <para>
+   Feature changes
+   <itemizedlist>
+    <listitem>
+     <para>
+      Added the (chainable) <link linkend="mysqlnd-ms.filter">filter concept</link>:
+      <itemizedlist>
+       <listitem>
+         <simpara>
+          BC break:
+          <link linkend="function.mysqlnd-ms-set-user-pick-server"><function>mysqlnd_ms_set_user_pick_server</function></link>
+          has been removed. The
+          <link linkend="mysqlnd-ms.filter"><literal>user</literal></link>
+          filter has been introduced to replace it.
+          The filter offers similar functionality, but see below for an
+          explanation of the differences.
+         </simpara>
+       </listitem>
+      </itemizedlist>
+     </para>
+    </listitem>
+    <listitem>
+     <simpara>
+      New powerful <acronym>JSON</acronym> based configuration syntax.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <link linkend="mysqlnd-ms.pooling">Lazy connections improved</link>:
+      security relevant, and state changing commands are covered.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Support for (native) prepared statements.
+     </simpara>
+    </listitem>
+    <listitem>
+     <para>
+      New statistics: <literal>use_master_guess</literal>,
+      <literal>use_slave_guess</literal>.
+      <itemizedlist>
+       <listitem>
+         <simpara>
+          BC break: Semantics of statistics changed for
+          <literal>use_slave</literal>, <literal>use_master</literal>.
+          Future changes are likely. Please see,
+          <function>mysqlnd_ms_get_stats</function>.
+         </simpara>
+       </listitem>
+      </itemizedlist>
+     </para>
+    </listitem>
+    <listitem>
+     <simpara>
+      List of broadcasted messages extended by <literal>ssl_set</literal>.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Library calls now monitored to remember settings for lazy connections:
+      <literal>change_user</literal>, <literal>select_db</literal>,
+      <literal>set_charset</literal>, <literal>set_autocommit</literal>.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Introduced <link linkend="ini.mysqlnd-ms.disable_rw_split"><literal>mysqlnd_ms.disable_rw_split</literal></link>.
+      The configuration setting allows using the load balancing and lazy connection
+      functionality independently of read write splitting.
+     </simpara>
+    </listitem>
+   </itemizedlist>
+  </para>
+  <para>
+   Bug fixes
+   <itemizedlist>
+    <listitem>
+     <simpara>
+      Fixed PECL #22724 - Server switching (mysqlnd_ms_query_is_select() case sensitive)
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Fixed PECL #22784 - Using mysql_connect and mysql_select_db did not work
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Fixed PECL #59982 - Unusable extension with --enable-mysqlnd-ms-table-filter.
+      Use of the option is NOT supported. You must not used it. Added note to m4.
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Fixed Bug #60119 - host="localhost" lost in mysqlnd_ms_get_last_used_connection()
+     </simpara>
+    </listitem>
+   </itemizedlist>
+  </para>
+  <para>
+    The <function>mysqlnd_ms_set_user_pick_server</function> function was removed, and
+    replaced in favor of a new <literal>user</literal> filter. You can no longer set a
+    callback function using <function>mysqlnd_ms_set_user_pick_server</function> at
+    runtime, but instead have to configure it in the plugins configuration file. The <literal>user</literal>
+    filter will pass the same arguments to the callback as before.
+    Therefore, you can continue to use the same procedural function as a callback.callback
+    It is no longer possible to use static class methods, or class methods of
+    an object instance, as a callback. Doing so will cause the function
+    executing a statement handled by the plugin to emit an
+    <constant>E_RECOVERABLE_ERROR</constant> level error, which might look like:
+    "<literal>(mysqlnd_ms) Specified callback (picker) is not a valid callback</literal>."
+    Note: this may halt your application.
+  </para>
+ </section>
+
+ <section xml:id="mysqlnd-ms.changes_one_o">
+  <title xmlns="http://docbook.org/ns/docbook">PECL/mysqlnd_ms 1.0 series</title>
+  <para>
+   1.0.1-alpha
+   <itemizedlist>
+    <listitem>
+     <simpara>
+      Release date: 04/2011
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Motto/theme: bug fix release
+     </simpara>
+    </listitem>
+   </itemizedlist>
+  </para>
+  <para>
+   1.0.0-alpha
+   <itemizedlist>
+    <listitem>
+     <simpara>
+      Release date: 04/2011
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Motto/theme: Cover replication basics to test user feedback
+     </simpara>
+    </listitem>
+   </itemizedlist>
+  </para>
+  <para>
+   The first release of practical use. It features basic automatic read-write splitting,
+   SQL hints to overrule automatic redirection, load balancing of
+   slave requests, lazy connections, and optional, automatic use of the master
+   after the first write.
+  </para>
+  <para>
+   The public feature set is close to that of the 1.1 release.
+  </para>
+  <para>
+   1.0.0-pre-alpha
+   <itemizedlist>
+    <listitem>
+     <simpara>
+      Release date: 09/2010
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      Motto/theme: Proof of concept
+     </simpara>
+    </listitem>
+   </itemizedlist>
+  </para>
+  <para>
+   Initial check-in. Essentially a demo of the
+   <link linkend="book.mysqlnd">mysqlnd</link> plugin API.
+  </para>
+ </section>
+
+</chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
